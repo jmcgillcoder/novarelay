@@ -1,0 +1,13 @@
+# Private runtime state
+native/.env
+native/data/
+.env
+.env.*
+!.env.example
+*.log
+*.tar.gz
+*.zip
+node_modules/
+.DS_Store
+__pycache__/
+*.pyc

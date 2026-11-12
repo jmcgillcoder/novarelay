@@ -1,0 +1,32 @@
+name: NovaRelay checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check source and run integration tests
+        working-directory: native
+        run: |
+          node --check server.mjs
+          node --check public/app.js
+          node --check lib/updater.mjs
+          node --check lib/anthropic-stream.mjs
+          node --check scripts/protocol-smoke.mjs
+          bash -n scripts/host-update.sh scripts/backup.sh ../install.sh
+          npm test
+  docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Docker build and non-root program readability
+        run: |
+          docker build -t novarelay-ci ./native
+          docker run --rm --entrypoint node novarelay-ci --check /app/server.mjs
+          docker run --rm --entrypoint node novarelay-ci --check /app/child.mjs

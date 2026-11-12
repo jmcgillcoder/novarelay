@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "title": "NovaRelay（星桥）v1.0.0 · 独立自托管 AI 网关",
+  "notes": [
+    "NovaRelay（星桥）独立仓库，保留 chaos-cl/lingxi-gateway 原作者 MIT 版权",
+    "Claude Code 流式 tool_use/input_json_delta 与估算 count_tokens",
+    "Codex Responses function/custom 工具及无状态工具结果回放",
+    "独立端口 8323，升级前备份与回滚，Docker 日志限额",
+    "运行状态 /readyz 与长期运行健康检查"
+  ],
+  "breaking": false,
+  "project": "NovaRelay"
+}

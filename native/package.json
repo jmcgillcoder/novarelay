@@ -1,0 +1,15 @@
+{
+  "name": "novarelay",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "set-admin": "node scripts/set-admin.mjs",
+    "smoke": "node scripts/protocol-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
