@@ -40,7 +40,7 @@ curl -fsS http://127.0.0.1:8323/healthz
 - 新项目目录：`/opt/novarelay`，数据：`native/data/`，密钥：`native/.env`。
 - 本机端口：`127.0.0.1:8323`（与旧项目 8322 隔离）；控制台：`https://你的域名/console`。
 - 安装脚本**不会**删除、修改或迁移 `/opt/mailbridge-ai` 以及旧项目账号、API Key。请先并行验收，再考虑切换反代和迁移数据。
-- **新 GitHub 仓库必须先创建并上传源码，以上链接才有效。** 仓库 URL 不存在时不要执行安装命令。
+- 新仓库源码已发布至 `jmcgillcoder/novarelay`，上述安装命令会从该仓库 `main` 下载；首次执行前请先检查脚本内容。
 
 完整部署与备份说明：[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)，从旧 MailBridge AI 迁移：[docs/MIGRATION.md](docs/MIGRATION.md)。
 

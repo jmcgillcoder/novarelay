@@ -4,7 +4,7 @@ The default deployment is a **single Docker Compose service** on a Linux host. I
 
 ## Initial setup
 
-1. Create/publish the independent GitHub repository `jmcgillcoder/novarelay` with this source tree. The installation URL does not work until the repository exists.
+1. Review the published source at `https://github.com/jmcgillcoder/novarelay`, especially `install.sh`, `native/Dockerfile` and the MIT attribution. The standalone installer uses only this repository.
 2. Install Docker Engine, Compose v2, Git, OpenSSL, tar and curl.
 3. Inspect the repository's `install.sh` and `native/Dockerfile` (the latter downloads a fixed upstream MIT commit), then run:
 
