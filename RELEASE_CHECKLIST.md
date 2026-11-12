@@ -12,8 +12,8 @@
 
 ## Must still be accepted before announcing production-ready
 
-- [ ] Create independent `jmcgillcoder/novarelay` repository and push code
-- [ ] GitHub Actions Node tests and **real Docker image build** on that repository
+- [x] Create independent `jmcgillcoder/novarelay` repository and push code
+- [x] GitHub Actions Node tests and **real Docker image build** on that repository
 - [ ] Deploy isolated container and check `/healthz` + `/readyz`
 - [ ] Verify account login and token renewal on *your own* real 139 account
 - [ ] Run `scripts/protocol-smoke.mjs` with a real key and each intended model
