@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f8f9fb" />
+<title>NovaRelay · 星桥控制台</title>
+<link rel="stylesheet" href="/console/style.css" />
+<script src="/console/app.js" defer></script>
+</head>
+<body>
+<div id="toast" role="status" aria-live="polite"></div>
+<section id="login" class="login-stage hidden">
+  <div class="login-form-wrap">
+    <div class="brand brand-login"><span class="logo-mark">NR</span><span><strong>NovaRelay</strong><small>星桥 · API RELAY</small></span></div>
+    <div class="login-copy"><h1>登录控制台</h1><p>统一管理 139 邮箱账号与 API 调用。</p></div>
+    <form id="loginForm">
+      <label>账号<input name="username" value="admin" autocomplete="username" required /></label>
+      <label>管理密码<input name="password" type="password" autocomplete="current-password" required /></label>
+      <button type="submit" class="button primary full">登录</button>
+    </form>
+    <div class="login-foot">仅允许通过 HTTPS 访问后台。登录失败会受到速率限制。</div>
+  </div>
+  <div class="login-side"><span class="text-brand">MB</span><div class="login-side-bottom"><p>MAILBRIDGE / CONTROL</p><strong>一个入口，管理所有模型调用。</strong><small>139 邮箱 · API Key · 使用统计</small></div></div>
+</section>
+<div id="shell" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo-mark">NR</span><span><strong>NovaRelay</strong><small>星桥 · API GATEWAY</small></span></div>
+    <div class="side-nav-title">工作台</div>
+    <nav class="navigation" aria-label="主导航">
+      <button type="button" class="nav-item" data-page="overview"><span class="nav-glyph">▤</span>概览</button>
+      <button type="button" class="nav-item" data-page="accounts"><span class="nav-glyph">◎</span>139 账号</button>
+      <button type="button" class="nav-item" data-page="keys"><span class="nav-glyph">⌘</span>API 密钥</button>
+      <button type="button" class="nav-item" data-page="models"><span class="nav-glyph">≋</span>模型测试</button>
+      <div class="side-nav-title inner">分析</div>
+      <button type="button" class="nav-item" data-page="pricing"><span class="nav-glyph">◷</span>Token 与费用</button>
+      <button type="button" class="nav-item" data-page="requests"><span class="nav-glyph">☷</span>请求日志</button>
+      <div class="side-nav-title inner">系统</div>
+      <button type="button" class="nav-item" data-page="updates"><span class="nav-glyph">↻</span>在线更新</button>
+      <button type="button" class="nav-item" data-page="settings"><span class="nav-glyph">⚙</span>设置</button>
+      <button type="button" class="nav-item" data-page="about"><span class="nav-glyph">ⓘ</span>关于</button>
+    </nav>
+    <div class="sidebar-bottom"><span class="online-circle"></span>服务已连接 <span class="app-version">v1.0.0</span></div>
+  </aside>
+  <main class="workarea">
+    <header class="topbar"><div class="breadcrumbs">NovaRelay <span>/</span> <b id="currentPage">概览</b></div><div class="top-right"><span class="top-chip">管理控制台</span><span class="top-avatar">A</span><button id="logout" class="text-button">退出</button></div></header>
+    <div class="content">
+      <section id="page-overview" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">OVERVIEW</p><h1>运行概览</h1><p class="hint">查看近 30 天的请求、令牌和服务状态。</p></div><button id="overviewRefresh" class="button subtle">刷新数据</button></div>
+        <div class="metric-row" id="stats"></div><div id="serviceAlerts" class="hidden"></div>
+        <div class="two-col"><div class="panel"><div class="panel-title"><h2>使用趋势</h2><span class="muted small">近 14 天</span></div><div class="trend-tabs" id="trendTabs"><button type="button" data-trend="requests" class="active">请求次数</button><button type="button" data-trend="tokens">Token</button><button type="button" data-trend="cost">参考费用</button></div><div id="activity" class="chart"></div></div><div class="panel"><div class="panel-title"><h2>账号状态</h2><button class="text-button" data-jump="accounts">查看全部</button></div><div id="overviewAccounts" class="compact-list"></div></div></div>
+        <div class="panel"><div class="panel-title"><h2>模型调用分布</h2><span class="muted small">近 30 天 · 调用次数</span></div><div id="modelDistribution" class="distribution"></div></div><div class="panel"><div class="panel-title"><h2>最近请求</h2><button class="text-button" data-jump="requests">更多记录</button></div><div id="overviewRequests" class="scroll-table"></div></div>
+      </section>
+      <section id="page-accounts" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">ACCOUNTS</p><h1>139 邮箱账号</h1><p class="hint">支持编辑备注与模型权限、重新授权、自动续期状态查看。每个账号的 Token 独立存储。</p></div><button id="openAccount" class="button primary"><span class="plus">+</span> 添加 139 账号</button></div>
+        <div class="info-line"><b>续期规则</b><span>每 6 小时检查一次；距 Token 到期 24 小时内尝试自动重铸。若 139 登录 SID / Cookie 失效，必须重新登录授权。</span></div><div class="info-line"><b>登录方式</b><span>先在 139 邮箱网页登录，然后导入 SID 和完整 Cookie。账号验证与 Token 续期由本程序管理，不需要部署旧网关。</span><a href="https://mail.10086.cn" target="_blank" rel="noopener noreferrer">打开 139 邮箱</a></div>
+        <div class="panel"><div class="panel-title"><h2>账号列表</h2><span class="muted small" id="accountCount"></span></div><div class="scroll-table" id="accountTable"></div></div>
+      </section>
+      <section id="page-keys" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">ACCESS</p><h1>API 密钥</h1><p class="hint">按 Key 单独统计近 30 天请求、Token 和参考费用，支持查看每个模型的明细。费用并非真实账单。为不同客户端创建独立密钥。密钥明文只显示一次。忘记后可验证管理员密码并重新生成，旧密钥立即失效。</p></div><button id="openKey" class="button primary"><span class="plus">+</span> 创建密钥</button></div>
+        <div class="panel"><div class="panel-title"><h2>密钥列表</h2><span class="muted small" id="keyCount"></span></div><div id="keyTable" class="scroll-table"></div></div>
+        <div class="panel guide"><h2>客户端连接</h2><div class="code-config"><span>Base URL</span><code id="apiBaseUrl"></code><button class="text-button" id="copyBase">复制</button></div><div class="code-config"><span>API 类型</span><code>OpenAI Chat Completions / Responses（文本与函数工具） / Anthropic Messages（文本与流式工具）</code></div></div>
+      </section>
+      <section id="page-models" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">PLAYGROUND</p><h1>模型测试</h1><p class="hint">选择一个账号，直接测试上游模型的实际响应。</p></div><button id="reloadModels" class="button subtle">更新模型列表</button></div>
+        <div class="panel"><form id="testForm"><div class="form-grid"><label>使用账号<select name="accountId" id="testAccountId" required></select></label><label>模型<select name="model" id="testModelId" required></select></label><label>协议格式<select name="protocol" id="testProtocol"><option value="chat">Chat Completions</option><option value="responses">Responses（文本与函数工具）</option><option value="anthropic">Claude Messages（文本与工具）</option></select></label></div><label>提问内容<textarea name="prompt" id="testPrompt" rows="4" maxlength="2000" placeholder="请输入要发送给模型的内容…" required>你好，请用一句话介绍自己。</textarea></label><div class="form-end"><span class="muted small">该操作会真实请求 139 AI 工作台</span><button class="button primary" type="submit" id="testSubmit">发送测试</button></div></form></div>
+        <div class="panel"><h2>接口兼容范围</h2><p class="hint">此测试验证文本非流式转换和真实上游回复；三种格式的流式输出由自动化协议测试覆盖，Claude Code 的复杂工具循环仍不能保证完全兼容。</p><div class="compat-grid"><span>Chat Completions</span><b>文本 / SSE</b><span>Responses</span><b>文本 / 函数工具（有限兼容）</b><span>Anthropic Messages</span><b>文本 / SSE / 工具（有限兼容）</b></div></div><div class="panel response-panel"><div class="panel-title"><h2>模型回复</h2><span id="testMeta" class="muted small">等待测试</span></div><pre id="testResult">选择账号和模型后，点击“发送测试”。</pre></div>
+      </section>
+      <section id="page-pricing" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">USAGE & PRICING</p><h1>Token 与费用</h1><p class="hint">自动同步 LiteLLM 参考价，匹配不到的模型可以指定映射或手动覆盖。</p></div></div>
+        <div class="info-line"><b>数据说明</b><span>139 上游一般不返回真实 Token 账单。显示的 Token 可为字符估算，参考费用不是实际扣费。</span></div>
+        <div class="panel"><div class="panel-title"><h2>参考单价</h2><div class="actions"><span id="priceSyncStatus" class="muted small">尚未同步</span><button id="syncPricing" class="button subtle" type="button">立即同步参考价</button><a href="https://models.litellm.ai" target="_blank" rel="noopener noreferrer">查看 LiteLLM</a></div></div><div class="scroll-table" id="pricingTable"></div></div>
+        <div class="panel compact"><h2>匹配第三方模型价格</h2><p class="hint">139 平台专用模型 ID 不一定能在 LiteLLM 找到。只有确定对应的提供商/型号时才填写目录模型 ID，避免错误定价。</p><form id="mapPrice" class="price-form"><label>139 模型 ID<input name="model" id="mapModelId" placeholder="blian_qwen38_flash" required /></label><label>LiteLLM 目录模型 ID<input name="referenceModelId" id="referenceModelId" placeholder="例如：dashscope/qwen-plus" /></label><button class="button subtle" type="submit">保存映射</button></form></div><div class="panel compact"><h2>手动覆盖参考价格</h2><form id="setPrice" class="price-form"><label>模型 ID<input name="model" id="priceModelId" placeholder="blian_qwen38_flash" required /></label><label>输入价格 / 百万 Token (USD)<input type="number" step="any" min="0" name="inputUsd" required /></label><label>输出价格 / 百万 Token (USD)<input type="number" step="any" min="0" name="outputUsd" required /></label><button class="button primary" type="submit">保存价格</button></form></div>
+        <div class="panel compact"><h2>定价候选（需确认）</h2><p class="hint">从 LiteLLM 公开目录查找同名或近似型号；只是候选，不能靠 AI 猜测价格后自动写入。请选择准确的服务商型号，再保存映射。</p><form id="priceSuggest" class="price-form"><label>139 模型 ID<input id="suggestModel" name="model" placeholder="blian_qwen38_flash" required /></label><button type="submit" class="button subtle">查找候选价格</button></form><div id="priceCandidates" class="candidate-list"></div></div>
+      </section>
+      <section id="page-requests" class="page hidden"><div class="page-title"><div><p class="eyebrow">ACTIVITY</p><h1>请求日志</h1><p class="hint">只保留调用摘要，不保存完整对话内容。</p></div><button id="logRefresh" class="button subtle">刷新</button></div><div class="panel"><div class="scroll-table" id="requestTable"></div></div></section>
+      <section id="page-updates" class="page hidden">
+        <div class="page-title"><div><p class="eyebrow">RELEASES</p><h1>在线更新</h1><p class="hint">从自己的 GitHub 主分支更新。构建由服务器的受限更新服务执行，不把 Docker 控制权限交给网页。</p></div><button id="checkUpdates" class="button subtle">检查新版本</button></div>
+        <div class="panel settings-panel"><h2>版本状态</h2><div class="update-facts"><div><span>当前运行版本</span><strong id="updateCurrentVersion">v1.0.0</strong></div><div><span>本机提交</span><code id="updateInstalled">—</code></div><div><span>GitHub 主分支</span><code id="updateLatest">—</code></div><div><span>目标版本</span><strong id="updateTargetVersion">检查后显示</strong></div><div><span>更新任务</span><strong id="updateState">尚未检测</strong></div><div><span>结果</span><span id="updateMessage">—</span></div></div><div class="form-end"><p id="updateHint" class="hint">首次启用网页更新，需要先运行一次新版安装脚本来安装主机更新服务。</p><button id="applyUpdate" class="button primary" disabled>更新到 GitHub 最新版</button></div></div>
+        <div class="panel settings-panel"><h2>本次更新内容</h2><p id="updateReleaseTitle" class="hint">点击「检查新版本」获取发布说明。</p><ul id="updateReleaseNotes" class="release-notes"></ul></div><div class="panel settings-panel"><h2>安全机制</h2><p class="hint">仅更新此项目绑定的 GitHub main，不接受任意仓库 URL 或命令。先校验 Git 工作区，再构建新镜像、检查服务；失败尽可能回滚。不会自动删除账号、Key 或会话文件。执行更新期间请勿关闭 VPS。</p><a href="https://github.com/jmcgillcoder/novarelay" target="_blank" rel="noopener noreferrer">查看源码与提交记录</a></div>
+      </section>
+      <section id="page-about" class="page hidden"><div class="page-title"><div><p class="eyebrow">ABOUT</p><h1>关于项目</h1><p class="hint">面向 139 邮箱 AI 工作台的非官方自托管多账号网关。</p></div></div><div class="panel settings-panel"><h2>NovaRelay（星桥） <span class="muted small"></span></h2><p class="hint">版本 v1.0.0 · 独立仓库 · Node.js · Docker · Linux</p><p>一个管理后台连接自己的 139 邮箱账号，统一管理 API Key、模型测试和用量。支持 OpenAI Chat Completions、部分 Responses 与 Anthropic Messages 格式。</p><div class="about-links"><a href="https://github.com/jmcgillcoder/novarelay" target="_blank" rel="noopener noreferrer">本项目 GitHub</a><a href="https://github.com/chaos-cl/lingxi-gateway" target="_blank" rel="noopener noreferrer">上游原项目（MIT）</a><a href="https://github.com/zyycn/codex-proxy-rs" target="_blank" rel="noopener noreferrer">交互参考项目</a><a href="https://models.litellm.ai" target="_blank" rel="noopener noreferrer">LiteLLM 参考定价</a></div><p class="hint">上游 139 协议实现由 chaos-cl/lingxi-gateway 提供并保留版权；管理系统为独立开发。非官方服务，不代表中国移动或模型厂商。</p></div></section>
+      <section id="page-settings" class="page hidden"><div class="page-title"><div><p class="eyebrow">SETTINGS</p><h1>安全设置</h1><p class="hint">管理员密码、服务地址与账号隔离说明。</p></div></div><div class="panel settings-panel"><h2>修改管理密码</h2><p class="hint">密码至少 8 位，建议使用随机密码。修改后需要重新登录。</p><form id="changePassword"><label>当前密码<input type="password" name="current" autocomplete="current-password" required /></label><label>新密码（至少 8 位）<input type="password" name="next" autocomplete="new-password" minlength="8" required /></label><button type="submit" class="button primary">保存新密码</button></form></div><div class="panel settings-panel"><h2>安全说明</h2><p class="hint">所有内置账号的 SID、Cookie 和缓存 Token 仅保存在服务器本地独立目录。请通过 HTTPS 反向代理访问管理后台；不要向公网暴露容器的内部端口。</p></div></section>
+    </div>
+  </main>
+</div>
+<dialog id="accountModal" class="modal"><form id="accountForm" method="dialog"><div class="modal-top"><div><h2 id="accountModalTitle">添加 139 账号</h2><p class="hint">修改账号备注和模型范围，或单独更新登录凭据。</p></div><button class="modal-close" type="button" data-close="accountModal" aria-label="关闭">×</button></div><input type="hidden" name="id" /><input type="hidden" name="mode" value="create" /><label id="accountNameField">账号备注<input name="name" placeholder="例如：139 主账号" maxlength="80" required /></label><label id="accountModelsField">允许的模型 ID（逗号分隔，留空为全部）<textarea name="models" rows="2" placeholder="blian_qwen38_flash, huoshan_glm_5_3"></textarea></label><div class="form-help" id="accountCredentialHelp"><b>从哪里获得登录凭据？</b><p>打开 <a href="https://mail.10086.cn" target="_blank" rel="noopener noreferrer">139 邮箱</a> 并登录。按 F12 → Network，在 AI 工作台请求中找到 SID 参数和 <code>smsrebuild10.mail.10086.cn</code> 请求的完整 Cookie。请只导入自己的账号。</p></div><div id="accountCredentials"><label>SID<input name="sid" autocomplete="off" placeholder="粘贴 SID（也可以先创建账号，稍后导入）" /></label><label>Cookie<textarea name="cookie" rows="4" spellcheck="false" autocomplete="off" placeholder="RMKEY=...; Os_SSo_Sid=...; ..."></textarea></label></div><div class="modal-actions"><button type="button" class="button subtle" data-close="accountModal">取消</button><button type="submit" class="button primary" id="accountSave">保存并验证</button></div></form></dialog>
+<dialog id="keyModal" class="modal"><form id="keyForm" method="dialog"><div class="modal-top"><div><h2>创建 API 密钥</h2><p class="hint">可以单独分配给不同的应用或设备。</p></div><button class="modal-close" type="button" data-close="keyModal">×</button></div><label>密钥名称<input name="name" placeholder="例如：我的客户端" maxlength="80" required /></label><label>每天调用上限 <small>0 表示不限制</small><input type="number" name="dailyLimit" min="0" max="1000000" value="0" required /></label><label>可使用模型 ID <small>逗号分隔；留空不限制</small><textarea name="models" rows="2" placeholder="blian_qwen38_flash, huoshan_glm_5_3"></textarea></label><div class="modal-actions"><button type="button" class="button subtle" data-close="keyModal">取消</button><button type="submit" class="button primary">生成密钥</button></div></form></dialog>
+<dialog id="keyResult" class="modal"><div class="modal-top"><div><h2 id="keyResultTitle">API 密钥已创建</h2><p class="hint">这是唯一一次查看完整密钥，请现在保存。</p></div><button class="modal-close" type="button" data-close="keyResult">×</button></div><div class="reveal-key"><code id="newKeyValue"></code></div><div class="modal-actions"><button type="button" class="button subtle" data-close="keyResult">关闭</button><button type="button" class="button primary" id="copyNewKey">复制密钥</button></div></dialog>
+<dialog id="rotateKeyModal" class="modal"><form id="rotateKeyForm" method="dialog"><div class="modal-top"><div><h2>重新生成 API 密钥</h2><p class="hint">旧密钥会立即失效，已连接的客户端需更新配置。原来的名称、模型权限和限额保持不变。</p></div><button class="modal-close" type="button" data-close="rotateKeyModal">×</button></div><input type="hidden" name="id" /><label>输入当前管理密码确认<input type="password" name="password" autocomplete="current-password" required /></label><div class="modal-actions"><button type="button" class="button subtle" data-close="rotateKeyModal">取消</button><button type="submit" class="button primary">确认重新生成</button></div></form></dialog>
+<dialog id="keyUsageModal" class="modal modal-wide"><div class="modal-top"><div><h2 id="keyUsageTitle">API Key 使用详情</h2><p class="hint">近 30 天参考费用。未定价请求单独列出，历史请求不会因修改价格自动重算。</p></div><button class="modal-close" type="button" data-close="keyUsageModal">×</button></div><div id="keyUsageSummary"></div><div id="keyUsageTable" class="scroll-table"></div><div class="modal-actions"><button type="button" class="button subtle" data-close="keyUsageModal">关闭</button></div></dialog>
+<dialog id="renewInfoModal" class="modal"><div class="modal-top"><div><h2 id="renewInfoTitle">自动续期详情</h2><p class="hint">Token 和官网登录会话的有效期不同。</p></div><button class="modal-close" type="button" data-close="renewInfoModal">×</button></div><div id="renewInfoBody" class="update-facts"></div><div class="modal-actions"><button type="button" class="button subtle" data-close="renewInfoModal">关闭</button></div></dialog>
+<dialog id="updateModal" class="modal" aria-labelledby="updateDialogTitle"><div class="modal-top"><div><h2 id="updateDialogTitle">更新服务</h2><p class="hint" id="updateDialogVersion">正在检查更新</p></div><button class="modal-close" type="button" id="updateDialogClose" aria-label="关闭">×</button></div><div class="update-progress"><div class="update-track"><div id="updateProgressFill"></div></div><span id="updateProgressText">0%</span></div><p id="updateDialogMessage" class="hint">更新请求已提交，服务器正在处理。</p><div class="modal-actions"><button class="button subtle" type="button" id="updateDialogHide">后台继续</button><button class="button primary hidden" type="button" id="updateReload">更新完成，重新载入</button></div></dialog></body>
+</html>

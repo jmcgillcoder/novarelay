@@ -1,0 +1,42 @@
+name: Bug report / 问题反馈
+description: Help reproduce an issue without sharing your SID/Cookie/API Key
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please **never** share your 139 SID, Cookie, API Key, .env, account backups, or full prompt history.
+        请勿提供 SID、Cookie、API Key、.env、账号备份或完整私人对话。
+  - type: input
+    id: version
+    attributes:
+      label: Gateway version / 网关版本
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol / 接口
+      options:
+        - Chat Completions
+        - OpenAI Responses / Codex
+        - Anthropic Messages / Claude Code
+        - Web admin / 控制台
+        - Updater / deployment
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result / 预期与实际结果
+      description: Only sanitized error messages and steps, please.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps / 复现步骤
+    validations:
+      required: true
