@@ -1,6 +1,6 @@
 # Deployment & operations
 
-The default deployment is a **single Docker Compose service** on a Linux host. It does not require 1Panel, PostgreSQL, Redis, Kubernetes or a separate instance of chaos-cl's upstream gateway.
+NovaRelay uses a **single Docker Compose service** on a Linux host. The image includes its 139 protocol engine and is designed to run behind an HTTPS reverse proxy.
 
 ## Initial setup
 
@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:8323/healthz
 
 4. Use HTTPS reverse proxy to forward `https://YOUR_DOMAIN/` to `http://127.0.0.1:8323`. Change the default admin password after first login. Consider Zero Trust for `/console`.
 
-**Do not** open port 8323 to the public; the app binds to 127.0.0.1. One may use Nginx, Caddy, Traefik, OpenResty, or an optional management panel such as 1Panel.
+**Do not** open port 8323 to the public; the app binds to 127.0.0.1. Use an HTTPS reverse proxy such as Nginx, Caddy, Traefik or OpenResty.
 
 ## Health checks
 
@@ -51,14 +51,14 @@ Backup creation pauses the application briefly for a consistent data snapshot. R
 - `/opt/novarelay/native/.env`: runtime config, mode `0600`.
 - `/opt/novarelay/native/data`: account credentials, hashed API Keys, logs, price catalog cache and update status, mode `0700` owner uid 10001.
 - `/opt/novarelay/backups`: unencrypted root-only archives. Encrypt for offsite use.
-- `127.0.0.1:8323`: gateway; old MailBridge AI may remain on 8322.
+- `127.0.0.1:8323`: the NovaRelay HTTP gateway.
 - Console login cookie is HTTP-only, SameSite=Strict, Secure by default. Use HTTPS externally.
 
 ## Deployment acceptance checklist
 
 - `healthz` HTTP 200 with correct version and `readyz` expected status.
 - Browser login works over HTTPS, can change admin password and add 139 accounts.
-- Original API Key and model access confirmed after any migration.
+- API Key and model access verified after a data restore or instance transfer.
 - Model list and Chat/Responses/Messages real requests verified; tools tested separately.
 - Backup creation and archive verification work; perform a controlled restore rehearsal on a nonproduction machine.
 - `docker logs` rotating, host update log accessible, TLS/Cloudflare configuration correct.

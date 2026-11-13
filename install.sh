@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NovaRelay; independent installation, never mutates /opt/mailbridge-ai.
+# NovaRelay standalone installer.
 set -Eeuo pipefail
 APP_DIR="${APP_DIR:-/opt/novarelay}"
 REPO_URL="${REPO_URL:-https://github.com/jmcgillcoder/novarelay.git}"
@@ -66,7 +66,7 @@ if [[ -d "$APP_DIR/.git" ]];then
   fi
 fi
 [[ ! -e "$APP_DIR" ]] || { echo "目标路径已存在但不是 Git 仓库：$APP_DIR" >&2;exit 1; }
-echo '[1/5] 获取独立仓库（不会覆盖旧项目）'
+echo '[1/5] 获取 NovaRelay 源码'
 mkdir -p "$(dirname "$APP_DIR")"
 git clone --depth=1 --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
 cd "$APP_DIR/native"
@@ -87,7 +87,7 @@ for i in $(seq 1 30);do
   if curl -fsS --max-time 2 http://127.0.0.1:8323/healthz | grep -q '"ok":true';then found=1;break;fi
   sleep 2
 done
-[[ "$found" == 1 ]] || { echo '新服务健康检查失败，未修改旧 MailBridge AI；请检查新容器日志' >&2;exit 1; }
+[[ "$found" == 1 ]] || { echo 'NovaRelay 健康检查失败；请检查容器日志' >&2;exit 1; }
 echo '[5/5] 设置可选的 systemd 更新服务'
 install_updater
 printf '{"sha":"%s","at":"%s","version":"%s"}\n' "$(git -C "$APP_DIR" rev-parse HEAD)" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(sed -nE 's/.*"version"[[:space:]]*:[[:space:]]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' package.json | head -n1)" > data/deployed-version.json

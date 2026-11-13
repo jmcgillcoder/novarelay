@@ -13,7 +13,7 @@ test('release metadata, program version and UI about text are consistent',()=>{
   assert.match(read('README.md'),new RegExp(`v${pkg.version.replaceAll('.','\\.')}`));
 });
 
-test('project deployment does not overwrite the old gateway, and Docker socket is absent',()=>{
+test('standalone deployment configuration is self-contained and Docker socket is absent',()=>{
   const installer=read('install.sh');
   const compose=read('native/compose.yml');
   assert.match(installer,/\/opt\/novarelay/);
@@ -23,7 +23,7 @@ test('project deployment does not overwrite the old gateway, and Docker socket i
   assert.match(installer,/novarelay-updater\.path/);
   assert.match(read('native/lib/updater.mjs'),/jmcgillcoder\/novarelay/);
   assert.match(read('native/public/index.html'),/NovaRelay（星桥）/);
-  assert.doesNotMatch(installer,/docker\s+rm\s+mailbridge-ai/);
+  assert.match(read('native/public/index.html'),/<span class="text-brand">NR<\/span>/);
   assert.match(compose,/127\.0\.0\.1|network_mode: host/);
   assert.match(compose,/max-size/);
   assert.match(compose,/stop_grace_period/);
@@ -46,5 +46,5 @@ test('public repository documentation states unsupported agent capabilities',()=
   assert.match(codex,/apply_patch/);
   assert.match(claude,/signature_delta/);
   assert.match(readme,/不是运营商实际扣费/);
-  assert.match(readme,/不需要 1Panel/);
+  assert.match(readme,/独立开发和维护/);
 });
