@@ -1,6 +1,6 @@
 # NovaRelay（星桥）
 
-**NovaRelay（星桥）** 是面向 139 邮箱 AI 工作台的非官方、自托管、多账号 API 网关。本项目以独立仓库维护，面向 Linux + Docker Compose；**不需要 1Panel**，也不需要同时部署原作者的旧网关。
+**NovaRelay（星桥）** 是面向 139 邮箱 AI 工作台的非官方、自托管、多账号 API 网关。项目独立开发和维护，使用 Linux + Docker Compose 部署，并通过 Web 控制台统一管理账号、API Key 和模型调用。
 
 > **版本：v1.0.0 代码候选。** 已通过本地模拟上游的协议测试，但**尚未在真实 139 账号、Codex CLI、Claude Code 和生产 VPS 上完成端到端验收**。不能把协议转换等同于 139 模型具有原生 Claude/OpenAI 工具或推理能力。请在测试环境验证后再切换业务。
 
@@ -38,11 +38,11 @@ curl -fsS http://127.0.0.1:8323/healthz
 初次启动时，管理员账号为 `admin`，随机初始密码**仅显示一次**。请立即改成自己的长密码。
 
 - 新项目目录：`/opt/novarelay`，数据：`native/data/`，密钥：`native/.env`。
-- 本机端口：`127.0.0.1:8323`（与旧项目 8322 隔离）；控制台：`https://你的域名/console`。
-- 安装脚本**不会**删除、修改或迁移 `/opt/mailbridge-ai` 以及旧项目账号、API Key。请先并行验收，再考虑切换反代和迁移数据。
+- 本机端口：`127.0.0.1:8323`；控制台：`https://你的域名/console`。
+- 初始化和更新均使用 NovaRelay 自己的配置及数据目录；升级前请备份 `native/.env` 和 `native/data/`。
 - 新仓库源码已发布至 `jmcgillcoder/novarelay`，上述安装命令会从该仓库 `main` 下载；首次执行前请先检查脚本内容。
 
-完整部署与备份说明：[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)，从旧 MailBridge AI 迁移：[docs/MIGRATION.md](docs/MIGRATION.md)。
+完整部署与备份说明：[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)；实例间的数据导入与恢复：[docs/MIGRATION.md](docs/MIGRATION.md)。
 
 ## Codex 和 Claude Code
 
@@ -109,8 +109,8 @@ SMOKE_TOOL_TEST=1 node native/scripts/protocol-smoke.mjs
 
 LiteLLM 目录价格按模型 ID 精确/唯一匹配，也允许管理员选择明确的供应商映射；139 专用 ID 不应随便猜价。费用为美元参考价，**不是运营商实际扣费**。Token 通常为估算，不可直接用于结算。网关不记录完整对话，保留调用元数据和必要登录会话；日志保留 90 天。
 
-## 开源、原项目与声明
+## 开源许可与原作者鸣谢
 
-此仓库为独立维护的 **NovaRelay（星桥）**，由此前的 `jmcgillcoder/lingxi-gateway`（MailBridge AI 管理层）演进而来。139 协议引擎源自 **[chaos-cl/lingxi-gateway](https://github.com/chaos-cl/lingxi-gateway)**，遵循 MIT License，构建时拉取固定的上游提交并保留其原始许可证；**原作者权益与许可证声明保留**。另参考 [zyycn/codex-proxy-rs](https://github.com/zyycn/codex-proxy-rs) 的更新器组织思路，但未复制其代码。
+**NovaRelay（星桥）** 是独立维护的开源项目。项目所使用的 139 协议引擎由 **[chaos-cl](https://github.com/chaos-cl)** 开发，原始仓库为 **[chaos-cl/lingxi-gateway](https://github.com/chaos-cl/lingxi-gateway)**，采用 MIT License。NovaRelay 在构建时获取固定版本的上游引擎，并保留原作者的版权声明和许可证。感谢原作者的开源贡献。
 
 详见 [LICENSE](LICENSE)、[NOTICE.md](NOTICE.md)、[CHANGELOG.md](CHANGELOG.md) 和 [SECURITY.md](SECURITY.md)。本项目不是中国移动、139 邮箱、OpenAI 或 Anthropic 的官方项目，不提供绕过登录验证的方法。Cookie/SID 失效后仍需在官方网站重新授权。

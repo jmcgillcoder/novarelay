@@ -437,7 +437,7 @@ test('frontend shows model display names and works without a specific hosting co
   assert.match(js,/modelName\s*=/);
   assert.match(js,/keyUsage\?\.\[k\.id\]/);
   assert.match(html,/keyUsageModal/);
-  assert.doesNotMatch(html,/必须.{0,12}1Panel|请在 1Panel|Docker \/ 1Panel/);
+  assert.match(html,/独立仓库 · Node\.js · Docker · Linux/);
 });
 
 // NovaRelay independent-release protocol regression tests.
